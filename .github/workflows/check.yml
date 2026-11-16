@@ -1,0 +1,13 @@
+name: Contributor checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: find public worker -name '*.js' -exec sh -ec 'for file do node --input-type=module --check < "$file" || exit 1; done' sh {} +
+      - name: Check visitor workflow entry point
+        run: test -s public/vision.html && grep -q 'href="vision.html"' public/index.html
